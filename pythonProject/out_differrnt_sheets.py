@@ -8,9 +8,21 @@ def dissemble():
 
     data=pd.read_excel(file_address)
     df=pd.DataFrame(data)
-
+    scbh=df["生产编号"]
+    scbh=scbh.tolist()
+    for i in range(len(scbh)):
+        if list(str(scbh[i]))[0] in ['1', '2', '3', '4', '5', '6', '7', '8', '9']:
+            scbh[i]='0'+str(scbh[i])
+    scbh=pd.DataFrame(scbh)
     print(df.columns.values)
+    df["生产编号"]=scbh
+    #处理时间
+    t_date = df["测试日期"]
+    t_date = pd.to_datetime(t_date)
+    df["测试日期"]=t_date.apply((lambda  x:x.date()))
+
     lst = [g for _, g in df.groupby('订单号')]
+
     print("开始保存...")
     i =1
     os.chdir(os.path.join(file_address,'..'))
@@ -24,7 +36,7 @@ def dissemble():
         print("共%s,处理了%s..."%(len(lst),i))
         ddh = part_data["订单号"].values[0]
         file_name="{}.xlsx".format(ddh)
-        part_data.to_excel(file_name)
+        part_data.to_excel(file_name,index=False)
         i += 1
 if __name__=='__main__':
     dissemble()
