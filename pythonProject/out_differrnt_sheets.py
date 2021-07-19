@@ -4,24 +4,25 @@
 import pandas as pd
 import os
 def dissemble():
-    file_address= r'C:\Users\fei.yang4\Desktop\results\ACR_OCV_汇总总表 .xlsx'
+    file_address= r'C:\Users\fei.yang4\Documents\work\0716_file_deal\HD存储汇总0716new.xlsx'
 
     data=pd.read_excel(file_address)
     df=pd.DataFrame(data)
-    scbh=df["生产编号"]
-    scbh=scbh.tolist()
-    for i in range(len(scbh)):
-        if list(str(scbh[i]))[0] in ['1', '2', '3', '4', '5', '6', '7', '8', '9']:
-            scbh[i]='0'+str(scbh[i])
-    scbh=pd.DataFrame(scbh)
-    print(df.columns.values)
-    df["生产编号"]=scbh
+    # scbh=df["生产编号"]
+    # scbh=scbh.tolist()
+    # for i in range(len(scbh)):
+    #     if list(str(scbh[i]))[0] in ['1', '2', '3', '4', '5', '6', '7', '8', '9']:
+    #         scbh[i]='0'+str(scbh[i])
+    # scbh=pd.DataFrame(scbh)
+    # print(df.columns.values)
+    # df["生产编号"]=scbh
     #处理时间
-    t_date = df["测试日期"]
+    set_index=['测试申请单号','测试编号','生产编号','电压(v)','内阻(mΩ)','记录人','日期','备注']
+    t_date = df["日期 "]
     t_date = pd.to_datetime(t_date)
-    df["测试日期"]=t_date.apply((lambda  x:x.date()))
+    df["日期 "]=t_date.apply((lambda  x:x.date()))
 
-    lst = [g for _, g in df.groupby('订单号')]
+    lst = [g for _, g in df.groupby('测试申请单号')]
 
     print("开始保存...")
     i =1
@@ -34,9 +35,9 @@ def dissemble():
     os.chdir(new_dir)
     for part_data in lst:
         print("共%s,处理了%s..."%(len(lst),i))
-        ddh = part_data["订单号"].values[0]
+        ddh = part_data["测试申请单号"].values[0]
         file_name="{}.xlsx".format(ddh)
-        part_data.to_excel(file_name,index=False)
+        part_data.to_excel(file_name,index=False,header=set_index)
         i += 1
 if __name__=='__main__':
     dissemble()
