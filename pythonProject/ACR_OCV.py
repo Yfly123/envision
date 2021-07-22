@@ -1,8 +1,6 @@
 import os
 import time
-import numpy as np
 import pandas as pd
-import openpyxl
 class Sheet_set():
     def __init__(self):
         # 指定文件目录
