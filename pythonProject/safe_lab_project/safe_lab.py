@@ -21,7 +21,6 @@ class Data_process():
             # formate设置输出格式，年月日分秒毫秒，行数，等级名，打印的信息
         logging.info("logs_output文件夹创建成功！")
 
-
     #根据循环号获取对应的循环号、充电容量、放电容量
     #接口：循环号   输出：循环号对应的  充电容量、 放电容量数据
     def get_data_from_cyclenum(self,cycle_num):
@@ -59,7 +58,6 @@ class Data_process():
         new_data = pd.concat([cycle_data,start_data],axis=1)
         print(new_data)
         # new_data内格式为    '循环序号','充电容量(Ah)', '放电容量(Ah)','起始时间'
-
 
     # 筛选并合并表格中数据形成新的数据表(循环数据表和工步数据表)
     def intergrate_data(self):

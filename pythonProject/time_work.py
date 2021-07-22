@@ -1,12 +1,10 @@
 from datetime import datetime
 from apscheduler.schedulers.blocking import BlockingScheduler
-
-from postgre-sql.py import Database_operation
+from sql_operation import Database_operation
 def job_need_do():
-
+    print('----now---')
     do = Database_operation()
-        # sql ="INSERT INTO yf_test (att) SELECT test_excel_electrical_c1.barcode AS att FROM test_excel_electrical_c1 "
-        # sql="select cycleid_join_dz,rg FROM bi_cycle_loan_insert where barcode = '0120X0503021' order by cycleid_join_dz ASC"
+
     sql_file = '123.sql'
     # 读取 sql 文件文本内容
     sql = open(sql_file, 'r', encoding='utf8')
@@ -17,8 +15,6 @@ def job_need_do():
     # list 转 str
     sql = "".join(sqltxt)
     res = do.insert(sql)
-
-
 
 
 
