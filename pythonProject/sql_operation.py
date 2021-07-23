@@ -2,7 +2,7 @@
 @Time ： 2021/7/21 14:02
 @Auth ： Fei.Yang
 """
-
+import pandas as pd
 import psycopg2
 
 class Database_operation():
@@ -50,10 +50,15 @@ class Database_operation():
         self.close()
         return res
 
-# if __name__=='__main__':
-#     do = Database_operation()
-#     # sql ="INSERT INTO yf_test (att) SELECT test_excel_electrical_c1.barcode AS att FROM test_excel_electrical_c1 "
-#     # sql="select cycleid_join_dz,rg FROM bi_cycle_loan_insert where barcode = '0120X0503021' order by cycleid_join_dz ASC"
+if __name__=='__main__':
+    do = Database_operation()
+    # sql ="INSERT INTO yf_test (att) SELECT test_excel_electrical_c1.barcode AS att FROM test_excel_electrical_c1 "
+    sql="select cycleid_join_dz,rg FROM bi_cycle_loan_insert where barcode = '0120X0503021' order by cycleid_join_dz ASC"
+    res=do.get_all(sql)
+    new_colume = ['序号', '值']
+    data = pd.DataFrame(res,columns=new_colume)
+
+    data.to_excel('test.xlsx',index=False)
 #     sql_file = '123.sql'
 #     # 读取 sql 文件文本内容
 #     sql = open(sql_file, 'r', encoding='utf8')
