@@ -7,11 +7,12 @@ import psycopg2
 
 class Database_operation():
     def __init__(self):
-        self.pg_host = "10.202.35.11"
+        # self.pg_host = "10.202.35.11"
+        self.pg_host = "10.202.8.68"
         self.pg_port = "5432"
-        self.pg_user = "Datalake"
-        self.pg_password = "Datalake"
-        self.pg_database = "tvc"
+        self.pg_user = "tvc_report_qas"
+        self.pg_password = "Tvc@report2020"
+        self.pg_database = "tvc_report_qas"
         self.pg_table = "test_excel_electrical_c1"
     def connect(self):
         self.conn = psycopg2.connect(database=self.pg_database,user=self.pg_user,password=self.pg_password,host=self.pg_host,port=self.pg_port)
@@ -50,15 +51,10 @@ class Database_operation():
         self.close()
         return res
 
-if __name__=='__main__':
-    do = Database_operation()
-    # sql ="INSERT INTO yf_test (att) SELECT test_excel_electrical_c1.barcode AS att FROM test_excel_electrical_c1 "
-    sql="select cycleid_join_dz,rg FROM bi_cycle_loan_insert where barcode = '0120X0503021' order by cycleid_join_dz ASC"
-    res=do.get_all(sql)
-    new_colume = ['序号', '值']
-    data = pd.DataFrame(res,columns=new_colume)
-
-    data.to_excel('test.xlsx',index=False)
+# if __name__=='__main__':
+#     do = Database_operation()
+#     # sql ="INSERT INTO yf_test (att) SELECT test_excel_electrical_c1.barcode AS att FROM test_excel_electrical_c1 "
+#     # sql="select cycleid_join_dz,rg FROM bi_cycle_loan_insert where barcode = '0120X0503021' order by cycleid_join_dz ASC"
 #     sql_file = '123.sql'
 #     # 读取 sql 文件文本内容
 #     sql = open(sql_file, 'r', encoding='utf8')
@@ -68,4 +64,13 @@ if __name__=='__main__':
 #     sql.close()
 #     # list 转 str
 #     sql = "".join(sqltxt)
-#     res = do.insert(sql)
+#     res=do.get_all(sql)
+#
+#     # new_colume = ['序号', '值']
+#     data = pd.DataFrame(res)
+#     data.fillna(0,inplace=True)
+#     data.iloc[:,-2] = data.iloc[:,-2].div(1e6)
+#     data.iloc[:,-1] =data.iloc[:,-1].div(1e6)
+#     print(data.iloc[:,-2:])
+#     data.to_excel('test.xlsx',index=False)
+

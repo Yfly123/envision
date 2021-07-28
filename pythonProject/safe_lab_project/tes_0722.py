@@ -2,7 +2,10 @@
 # @Time ： 2021/7/22 15:52
 # @Auth ： Fei.Yang
 # """
-# import datetime
+import re
+
+import pandas as pd
+import numpy as np
 #
 # file_addr=r'C:\Users\fei.yang4\Documents\work\safety_lab\input\stress_sensor_data\11-2020.csv'
 # import pandas as pd
@@ -25,5 +28,6 @@
 # # print(res)
 # # res['sum']=res.apply(lambda x:sum(x),axis=1)
 # # print(res)
-colum=['a','b','c']
-print(colum+colum)
+te=[1,2,3,2,3,2,]
+list(set(te))
+print(te)

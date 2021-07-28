@@ -15,10 +15,10 @@ class Data_process():
         #将待处理的文件放在
         self.root_addr=r'C:\Users\fei.yang4\Documents\work\safety_lab'
         self.input_addr = r"C:\Users\fei.yang4\Documents\work\safety_lab\input\step_data"
-        self.sensor_addr = r'C:\Users\fei.yang4\Documents\work\safety_lab\input\stress_sensor_data\11-2020.csv'
+        self.sensor_addr = r'C:\Users\fei.yang4\Documents\work\safety_lab\input\stress_sensor_data\11-2021.csv'
             # r"C:\Users\fei.yang4\Documents\work\safety_lab\input\stress_sensor_data"
         self.make_file_and_log()
-        # logging.basicConfig(level=logging.INFO, filename='.\logs\log-'+dt.datetime.now().strftime('%Y-%m-%d')+'.txt',filemode='a',format='%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s', encoding='utf-8')
+        logging.basicConfig(level=logging.INFO, filename='.\logs\log-'+dt.datetime.now().strftime('%Y-%m-%d')+'.txt',filemode='a',format='%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s')
             # formate设置输出格式，年月日分秒毫秒，行数，等级名，打印的信息
         logging.info("logs_output文件夹创建成功！")
 
@@ -102,41 +102,52 @@ class Data_process():
     def search_pressure_data(self, data_summary):
         pos_temp=[]
         temp = pd.DataFrame()
+        i=0
         for i in range(len(data_summary)):
             time_data = data_summary.at[i, '起始时间']
             pos,time1 = self.find_press_pos_of_step_num(str(time_data))
             file_addr=self.get_preesur_file(time1)
             pos_temp.append(pos)
+
             if len(pos_temp)>=2:
+                data_res=pd.DataFrame(data_summary.iloc[[i-1],:3])
+
                 data1 = pd.read_csv(file_addr, low_memory=False)
                 data1 = data1.iloc[:, 1:]
                 data2 = pd.DataFrame(data1)
-                res = data2.iloc[pos_temp[0]:pos_temp[1], :].astype(float)
+                data2.replace('  ------ ',np.nan)
+                # data3 = data2.dropna(axis=0,how='all')
+                data2.replace(np.nan,0)
+                res = data2.iloc[pos_temp[0]:pos_temp[1], :]
+
+                # try:
+                #     res=res.astype(float)
+                # except:
+                res = res.replace('  ------ ', np.nan)
+                res = res.dropna(axis=0,how='all')
+                res = res.replace(np.nan, 0)
+                res=res.astype(float)
+
                 res['sum'] = res.apply(lambda x: sum(x), axis=1)
                 res = res.sort_values(by='sum')
                 colum=data2.columns.tolist()
                 new_index = colum+colum
                 new_index.insert(len(colum),'Fmax')
                 new_index.append('Fmin')
-
+                new_index.insert(0, '放电容量(Ah)')
+                new_index.insert(0,'充电容量(Ah)')
+                new_index.insert(0,'循环序号')
                 result = res.iloc[[-1], :].values
                 result1=res.iloc[[0],:].values
-                new_data = np.hstack([result, result1])
+                print(data_res)
+                new_data = np.hstack([data_res, result,result1])
                 new_data = pd.DataFrame(new_data,columns=new_index)
-                print(new_data)
                 pos_temp.pop(0)
+                temp = pd.concat([temp,new_data])
+                print(temp)
 
-
-
-            # if len(pos)>=2:
-            #
-            #     data1 = data1.iloc[:, 1:]
-            #     data2 = pd.DataFrame(data1)
-            #     res = data2.iloc[288097:291599, :].astype(float)
-            #     res['sum'] = res.apply(lambda x: sum(x), axis=1)
-            #     res = res.sort_values(by='sum')
-            #     result = res.iloc[[-1], :]
-
+            print("已完成%s,跳过%s,共%s..."%(len(temp),i,len(data_summary)))
+        return temp
 
     #在文件里创建output文件以及log.txt
     def make_file_and_log(self):
@@ -160,10 +171,10 @@ if __name__=='__main__':
     dp = Data_process()
     # # dp.intergrate_data()
     res = dp.get_start_time_and_cycle_num()
-    dp.search_pressure_data(res)
+
+
+    result = dp.search_pressure_data(res)
     # #获取每个起始时间的年，然后再去对应的年的压力文件里找数据
+    result.to_csv('test-0726-2021.csv',index=False)
 
 
-
-    # res = dp.find_press_pos_of_step_num('2020/11/20  18:03:51')
-    # print(res)
